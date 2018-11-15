@@ -48,7 +48,7 @@ module.exports = (config) => {
       .then((response) => {
         res.json(response.body);
       })
-      .catch((err) => {
+      .catch(() => {
         res.status(500).send('We encountered an error while attempting to contact Canvas and forward an API request.');
       });
   });
