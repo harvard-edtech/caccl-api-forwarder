@@ -1,5 +1,4 @@
-// Highest error code: CAF1
+// Highest error code:
 
 module.exports = {
-  notConnected: 'CAF1',
 };

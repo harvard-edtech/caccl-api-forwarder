@@ -1,4 +1,4 @@
-const sendRequest = require('./defaultSendRequest.js');
+const sendRequest = require('../caccl-send-request/index.js'); // TODO: use actual module
 
 /**
  * Initializes api forwarding
