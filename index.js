@@ -1,4 +1,4 @@
-const sendRequest = require('../caccl-send-request/index.js'); // TODO: use actual module
+const sendRequest = require('caccl-send-request');
 
 /**
  * Initializes api forwarding
@@ -46,7 +46,7 @@ module.exports = (config) => {
       params: data,
     })
       .then((response) => {
-        res.json(response.body);
+        res.status(response.status).json(response.body);
       })
       .catch(() => {
         res.status(500).send('We encountered an error while attempting to contact Canvas and forward an API request.');

@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "caccl-send-request": "^1.0.0",
     "qs": "^6.5.2"
   }
 }
