@@ -21,7 +21,13 @@ module.exports = (config) => {
     throw new Error('We could not initialize CACCL API forwarder without "app", an express app to add routes to.');
   }
   const host = config.canvasHost || 'canvas.instructure.com';
-  const apiForwardPathPrefix = config.apiForwardPathPrefix || '/canvas';
+  let { apiForwardPathPrefix } = config;
+  if (apiForwardPathPrefix === undefined) {
+    apiForwardPathPrefix = '/canvas';
+  } else if (apiForwardPathPrefix === null) {
+    apiForwardPathPrefix = '';
+  }
+
   const numRetries = (config.numRetries !== undefined ? config.numRetries : 3);
 
   // Add route
