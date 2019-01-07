@@ -50,6 +50,8 @@ module.exports = (config) => {
       numRetries,
       method: req.method,
       params: data,
+      // Ignore self-signed certificate if host is simulated Canvas
+      ignoreSSLIssues: (host === 'localhost:8088'),
     })
       .then((response) => {
         res.status(response.status).json(response.body);
