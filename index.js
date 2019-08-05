@@ -54,10 +54,15 @@ module.exports = (config) => {
       ignoreSSLIssues: (host === 'localhost:8088'),
     })
       .then((response) => {
+        // Set status
+        res.status(response.status);
+
         // Send link header
-        res.setHeader('link', response.headers.link);
+        res.header('Access-Control-Expose-Headers', 'Link');
+        res.set('Link', response.headers.link);
+
         // Send request
-        res.status(response.status).json(response.body);
+        res.json(response.body);
       })
       .catch((err) => {
         res.status(500).send(`We encountered an error while attempting to contact Canvas and forward an API request: ${err.message}`);
