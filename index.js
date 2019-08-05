@@ -54,6 +54,9 @@ module.exports = (config) => {
       ignoreSSLIssues: (host === 'localhost:8088'),
     })
       .then((response) => {
+        // Send link header
+        res.setHeader('link', response.headers.link);
+        // Send request
         res.status(response.status).json(response.body);
       })
       .catch((err) => {
