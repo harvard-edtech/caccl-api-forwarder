@@ -31,7 +31,7 @@ module.exports = (config) => {
   const numRetries = (config.numRetries !== undefined ? config.numRetries : 3);
 
   // Add route
-  config.app.all(apiForwardPathPrefix + '*', (req, res) => {
+  config.app.all(`${apiForwardPathPrefix}*`, (req, res) => {
     const isGET = (req.method === 'GET');
     const data = (isGET ? req.query : req.body);
 
@@ -43,29 +43,77 @@ module.exports = (config) => {
       data.access_token = req.session.accessToken || config.accessToken;
     }
 
-    // Send the request
-    sendRequest({
-      host,
-      path,
-      numRetries,
-      method: req.method,
-      params: data,
-      // Ignore self-signed certificate if host is simulated Canvas
-      ignoreSSLIssues: (host === 'localhost:8088'),
-    })
-      .then((response) => {
-        // Set status
-        res.status(response.status);
-
-        // Send link header
-        res.header('Access-Control-Expose-Headers', 'Link');
-        res.set('Link', response.headers.link);
-
-        // Send request
-        res.json(response.body);
+    /**
+     * Attempt to send the request to Canvas
+     */
+    const attemptRequest = (alreadyRefreshed) => {
+      // Send the request
+      sendRequest({
+        host,
+        path,
+        numRetries,
+        method: req.method,
+        params: data,
+        // Ignore self-signed certificate if host is simulated Canvas
+        ignoreSSLIssues: (host === 'localhost:8088'),
       })
-      .catch((err) => {
-        res.status(500).send(`We encountered an error while attempting to contact Canvas and forward an API request: ${err.message}`);
-      });
+        .then((response) => {
+          /**
+           * Forward the response to the client
+           */
+          const forward = () => {
+            // Set status
+            res.status(response.status);
+
+            // Send link header
+            res.header('Access-Control-Expose-Headers', 'Link');
+            res.set('Link', response.headers.link);
+
+            // Send request
+            res.json(response.body);
+          };
+
+          // Detect invalid access token
+          if (
+            response.status === 401
+            && !alreadyRefreshed
+            && response.body
+            && response.body.errors
+            && response.body.errors[0]
+            && response.body.errors[0].message
+            && response.body.errors[0].message === 'Invalid access token.'
+          ) {
+            // Invalid token!
+            // Attempt to refresh
+            req
+              .performRefresh()
+              .catch(() => {
+                return Promise.resolve(false);
+              })
+              .then((results) => {
+                if (results && results.accessToken) {
+                  // Add the new access token to the body
+                  const { accessToken } = results;
+                  data.access_token = accessToken;
+                  // Retry the request
+                  return attemptRequest(true);
+                }
+
+                // An error occurred while attempting to refresh.
+                // Just forward the original response
+                return forward();
+              });
+          } else {
+            // Valid token. Forward response immediately
+            return forward();
+          }
+        })
+        .catch((err) => {
+          res.status(500).send(`We encountered an error while attempting to contact Canvas and forward an API request: ${err.message}`);
+        });
+    };
+
+    // Immediately attempt the request
+    attemptRequest();
   });
 };
