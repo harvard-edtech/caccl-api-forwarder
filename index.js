@@ -58,6 +58,9 @@ module.exports = (config) => {
         ignoreSSLIssues: (host === 'localhost:8088'),
       })
         .then((response) => {
+          if (alreadyRefreshed) { // TODO: remove
+            console.log('Send request response', response.status, response.body);
+          }
           /**
            * Forward the response to the client
            */
@@ -91,11 +94,13 @@ module.exports = (config) => {
                 return Promise.resolve(false);
               })
               .then((results) => {
+                console.log('Refresh results', results); // TODO: remove
                 if (results && results.accessToken) {
                   // Add the new access token to the body
                   const { accessToken } = results;
                   data.access_token = accessToken;
                   // Retry the request
+                  console.log('Now attempting again'); // TODO: remove
                   return attemptRequest(true);
                 }
 
