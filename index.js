@@ -2,7 +2,7 @@ const sendRequest = require('caccl-send-request');
 
 /**
  * Initializes api forwarding
- * @author Gabriel Abrams
+ * @author Gabe Abrams
  * @param {object} app - the express app to add routes to
  * @param {string} [canvasHost=canvas.instructure.com] - the Canvas host to
  *   forward requests to
@@ -39,6 +39,7 @@ module.exports = (config) => {
 
     /**
      * Attempt to send the request to Canvas
+     * @author Gabe Abrams
      * @param {boolean} [alreadyRefreshed] - if true, we have already tried to
      *   refresh the user's authorization before, so don't try that again
      */
@@ -57,6 +58,7 @@ module.exports = (config) => {
 
         /**
          * Forward the response to the client
+         * @author Gabe Abrams
          */
         const forward = () => {
           // Set status
