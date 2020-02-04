@@ -40,6 +40,7 @@ module.exports = (config) => {
     if (!data.access_token) {
       data.access_token = req.accessToken || config.accessToken;
     }
+    console.log('Forwarding', path, data);
 
     // Attempt to send the request to Canvas
 
