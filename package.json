@@ -1,0 +1,40 @@
+{
+  "name": "caccl-api-forwarder",
+  "version": "1.1.6",
+  "description": "Client-side express module that forwards Canvas requests from the client to Canvas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harvard-edtech/caccl-api-forwarder.git"
+  },
+  "keywords": [
+    "CACCL",
+    "Canvas",
+    "API",
+    "LTI",
+    "request",
+    "forward"
+  ],
+  "author": "Gabriel Abrams <gabeabrams@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harvard-edtech/caccl-api-forwarder/issues"
+  },
+  "homepage": "https://github.com/harvard-edtech/caccl-api-forwarder#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.18.3"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "caccl-error": "^1.0.3",
+    "caccl-send-request": "^1.0.13",
+    "qs": "^6.9.1"
+  }
+}
