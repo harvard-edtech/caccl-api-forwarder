@@ -6,8 +6,12 @@ import { getAccessToken } from 'caccl-authorizer';
 import { getLaunchInfo } from 'caccl-lti';
 import sendRequest from 'caccl-send-request';
 
+// Import shared types
+import CACCLTag from './shared/types/CACCLTag';
+
 // Import shared constants
-import CACCL_PATHS from './constants/CACCL_PATHS';
+import CACCL_PATHS from './shared/constants/CACCL_PATHS';
+import COURSE_ID_REPLACE_WITH_CURR from './shared/constants/COURSE_ID_REPLACE_WITH_CURR';
 
 /**
  * Initializes api forwarding
@@ -35,9 +39,6 @@ const initAPIForwarder = (
       const isGET = (req.method === 'GET');
       const params = (isGET ? req.query : req.body);
 
-      // Get path of the Canvas instance
-      const path = req.path.substring(CACCL_PATHS.FORWARDER_PREFIX.length);
-
       // Add the current user's access token if possible
       if (!params.access_token) {
         try {
@@ -62,6 +63,18 @@ const initAPIForwarder = (
           ],
         });
       }
+
+      // Get path of the Canvas instance
+      const path = (
+        req.path
+          // Remove forwarder prefix
+          .substring(CACCL_PATHS.FORWARDER_PREFIX.length)
+          // Replace placeholder with current course
+          .replace(
+            String(COURSE_ID_REPLACE_WITH_CURR),
+            String(launchInfo.courseId),
+          )
+      );
 
       // Attempt to send the request to Canvas
       try {
@@ -97,5 +110,8 @@ const initAPIForwarder = (
     },
   );
 };
+
+// Add CACCL tag
+initAPIForwarder.tag = CACCLTag.API_FORWARDER;
 
 export default initAPIForwarder;
