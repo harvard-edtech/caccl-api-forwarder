@@ -1,6 +1,6 @@
 {
   "name": "caccl-api-forwarder",
-  "version": "2.0.0-beta.10",
+  "version": "2.0.0-beta.15",
   "description": "Client-side express module that forwards Canvas requests from the client to Canvas.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
