@@ -85,8 +85,6 @@ const initAPIForwarder = (
           numRetries,
           method: req.method as any,
           params,
-          // Ignore self-signed certificate if host is simulated Canvas
-          ignoreSSLIssues: launchInfo.canvasHost.startsWith('localhost'),
         });
 
         // Set status
