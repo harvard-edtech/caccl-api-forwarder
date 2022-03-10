@@ -6,9 +6,6 @@ import { getAccessToken } from 'caccl-authorizer';
 import { getLaunchInfo } from 'caccl-lti';
 import sendRequest from 'caccl-send-request';
 
-// Import shared types
-import CACCLTag from './shared/types/CACCLTag';
-
 // Import shared constants
 import CACCL_PATHS from './shared/constants/CACCL_PATHS';
 import COURSE_ID_REPLACE_WITH_CURR from './shared/constants/COURSE_ID_REPLACE_WITH_CURR';
@@ -18,11 +15,15 @@ import COURSE_ID_REPLACE_WITH_CURR from './shared/constants/COURSE_ID_REPLACE_WI
  * @author Gabe Abrams
  * @param {express.Application} app the express app to add routes to
  * @param {number} [numRetries=3] the number of times to retry failed requests
+ * @param {string} [forwarderPrefix=default value] prefix to require before
+ *   the path of each api request. Note: it is not recommended to change
+ *   this value!
  */
 const initAPIForwarder = (
   opts: {
     app: express.Application,
     numRetries?: number,
+    forwarderPrefix?: string,
   },
 ) => {
   // Gather and validate configuration options
@@ -31,10 +32,14 @@ const initAPIForwarder = (
       ? 3
       : opts.numRetries
   );
+  const forwarderPrefix = (
+    opts.forwarderPrefix
+    ?? CACCL_PATHS.FORWARDER_PREFIX
+  );
 
   // Add forwarding route
   opts.app.all(
-    `${CACCL_PATHS.FORWARDER_PREFIX}*`,
+    `${forwarderPrefix}*`,
     async (req, res) => {
       const isGET = (req.method === 'GET');
       const params = (isGET ? req.query : req.body);
@@ -68,7 +73,7 @@ const initAPIForwarder = (
       const path = (
         req.path
           // Remove forwarder prefix
-          .substring(CACCL_PATHS.FORWARDER_PREFIX.length)
+          .substring(forwarderPrefix.length)
           // Replace placeholder with current course
           .replace(
             String(COURSE_ID_REPLACE_WITH_CURR),
@@ -108,8 +113,5 @@ const initAPIForwarder = (
     },
   );
 };
-
-// Add CACCL tag
-initAPIForwarder.tag = CACCLTag.API_FORWARDER;
 
 export default initAPIForwarder;
