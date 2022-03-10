@@ -18,12 +18,16 @@ import COURSE_ID_REPLACE_WITH_CURR from './shared/constants/COURSE_ID_REPLACE_WI
  * @param {string} [forwarderPrefix=default value] prefix to require before
  *   the path of each api request. Note: it is not recommended to change
  *   this value!
+ * @param {string} [defaultCanvasHost=host that user launched from] Canvas host
+ *   to forward requests to if user has not launched. Note: it is not
+ *   recommended to change this value!
  */
 const initAPIForwarder = (
   opts: {
     app: express.Application,
     numRetries?: number,
     forwarderPrefix?: string,
+    defaultCanvasHost?: string,
   },
 ) => {
   // Gather and validate configuration options
@@ -59,7 +63,7 @@ const initAPIForwarder = (
         launched,
         launchInfo,
       } = getLaunchInfo(req);
-      if (!launched) {
+      if (!launched && !opts.defaultCanvasHost) {
         // No launch info. Respond with Canvas's "not authorized" response
         return res.status(401).json({
           status: 'unauthenticated',
@@ -85,7 +89,11 @@ const initAPIForwarder = (
       try {
         // Send the request
         const response = await sendRequest({
-          host: launchInfo.canvasHost,
+          host: (
+            launched
+              ? (launchInfo.canvasHost ?? opts.defaultCanvasHost)
+              : opts.defaultCanvasHost
+          ),
           path,
           numRetries,
           method: req.method as any,

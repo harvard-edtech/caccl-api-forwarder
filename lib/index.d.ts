@@ -7,10 +7,14 @@ import express from 'express';
  * @param {string} [forwarderPrefix=default value] prefix to require before
  *   the path of each api request. Note: it is not recommended to change
  *   this value!
+ * @param {string} [defaultCanvasHost=host that user launched from] Canvas host
+ *   to forward requests to if user has not launched. Note: it is not
+ *   recommended to change this value!
  */
 declare const initAPIForwarder: (opts: {
     app: express.Application;
     numRetries?: number;
     forwarderPrefix?: string;
+    defaultCanvasHost?: string;
 }) => void;
 export default initAPIForwarder;
