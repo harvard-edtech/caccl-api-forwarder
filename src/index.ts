@@ -74,16 +74,18 @@ const initAPIForwarder = (
       }
 
       // Get path of the Canvas instance
-      const path = (
+      let path = (
         req.path
           // Remove forwarder prefix
           .substring(forwarderPrefix.length)
-          // Replace placeholder with current course
-          .replace(
-            String(COURSE_ID_REPLACE_WITH_CURR),
-            String(launchInfo.courseId),
-          )
       );
+      if (launched) {
+        // Replace placeholder with current course
+        path = path.replace(
+          String(COURSE_ID_REPLACE_WITH_CURR),
+          String(launchInfo.courseId),
+        );
+      }
 
       // Attempt to send the request to Canvas
       try {
