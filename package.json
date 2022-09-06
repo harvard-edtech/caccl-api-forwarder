@@ -35,10 +35,10 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "caccl-authorizer": "^2.0.14",
-    "caccl-error": "^2.0.14",
-    "caccl-lti": "^2.0.14",
-    "caccl-send-request": "^2.0.14",
+    "caccl-authorizer": "^2.0.15",
+    "caccl-error": "^2.0.15",
+    "caccl-lti": "^2.0.15",
+    "caccl-send-request": "^2.0.15",
     "express": "^4.17.3"
   }
 }
